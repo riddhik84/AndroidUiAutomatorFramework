@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AndroidUIAutomator.iml" filepath="$PROJECT_DIR$/AndroidUIAutomator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidUiAutomatorFramework.iml" filepath="$PROJECT_DIR$/AndroidUiAutomatorFramework.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
