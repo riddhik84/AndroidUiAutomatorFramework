@@ -16,11 +16,11 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by rkakadia on 5/26/2016.
  */
-public class EbayTest {
+public class Sample {
 
     //Basic tests for default Android calculator application
 
-    static final String LOG_TAG = EbayTest.class.getSimpleName();
+    static final String LOG_TAG = Sample.class.getSimpleName();
     static final int WAIT_TIME = 3000;
     int num1 = 100;
     int num2 = 20;

@@ -10,5 +10,6 @@ public class Constants {
         eBay
     }
     public static final int WAIT_TIME = 3000;
+    public static final String EBAY_PACKAGE = "com.ebay.mobile";
 
 }
