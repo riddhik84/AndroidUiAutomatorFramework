@@ -1,6 +1,7 @@
 package com.riddhik.myapps.androiduiautomatorexample.AutomationFramework;
 
-import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
@@ -24,9 +25,15 @@ public class TestHelper {
 
     private static final String LOG_TAG = TestHelper.class.getSimpleName();
 
+    /**
+     * Uninstall app
+     * @param uiDevice Device under test
+     * @return status
+     */
     public static boolean uninstallApp(UiDevice uiDevice) {
         boolean result = false;
         try {
+            //pm uninstall command to uninstall app
             String output = uiDevice.executeShellCommand("pm uninstall " + Constants.EBAY_PACKAGE);
             //Log.d(LOG_TAG, "Shell output : " + output);
             if (output.contains("success")) {
@@ -39,8 +46,7 @@ public class TestHelper {
     }
 
     /**
-     * Download an Install an app from play store
-     *
+     * Download ans Install an app from play store
      * @param uiDevice
      * @param appName
      */
@@ -58,15 +64,13 @@ public class TestHelper {
         UiObject openButton = uiDevice.findObject(new UiSelector()
                 .resourceId("com.android.vending:id/launch_button")
                 .text("OPEN"));
-        UiObject ebayNotification = uiDevice.findObject(new UiSelector()
-                .resourceId("android:id/title")
-                .packageName("com.android.providers.downloads"));
 
         try {
-            //Search and open play store
-            searchAndOpenApp(uiDevice, Constants.PLAY_STORE_APP);
+            //Search and open play store app
+            //searchAndOpenApp(uiDevice, Constants.PLAY_STORE_APP);
+            openApp(Constants.PLAY_STORE_PACKAGE);
             Thread.sleep(Constants.WAIT_TIME);
-            //Search eBay app
+            //Search eBay app in play store
             searchBoxImageView.click();
             Thread.sleep(Constants.WAIT_TIME);
             searchEditBox.setText(appName);
@@ -76,14 +80,14 @@ public class TestHelper {
             //Select search result
             firstSearchResult.click();
             Thread.sleep(Constants.WAIT_TIME);
-            //Install the app
+            //Install the app and wait till installation complete
             if (installButton.exists()) {
                 installButton.click();
                 for (int i = 0; i < 10; i++) {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 }
 
-                //Check if app installed
+                //Check if app is installed
                 if (openButton.exists()) {
                     Log.d(LOG_TAG, "App is installed from play store");
                     result = true;
@@ -93,7 +97,7 @@ public class TestHelper {
                     uiDevice.pressHome();
                 }
             } else {
-                //app is already installed
+                //app is already installed No-action
             }
 
         } catch (Exception e) {
@@ -119,13 +123,13 @@ public class TestHelper {
         UiObject appToSearch = uiDevice.findObject(new UiSelector().description(appName));
 
         try {
+            //Select all apps view and select and open an app
             uiDevice.pressHome();
-            Thread.sleep(Constants.WAIT_TIME);
             allAppsBtn.clickAndWaitForNewWindow();
             UiObject appToBeLaunched = allAppsView.getChildByText(new UiSelector()
                             .className(android.widget.TextView.class.getName()),
                     appName);
-            isAppFound = appToBeLaunched.clickAndWaitForNewWindow(5000);
+            isAppFound = appToBeLaunched.clickAndWaitForNewWindow();
         } catch (UiObjectNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -150,13 +154,18 @@ public class TestHelper {
         UiObject productResultText = uiDevice.findObject(new UiSelector().resourceId("com.ebay.mobile:id/textview_item_count"));
 
         try {
-            if (eBaySearchBox.exists()) {
+            //Delay for first time app launch after installation from play store
+            Thread.sleep(30000);
+            if (eBaySearchBox.waitForExists(5000)) {
+                //Open search box in ebay app and search
                 eBaySearchBox.clickAndWaitForNewWindow(Constants.WAIT_TIME);
                 eBaySearchEditBox.clearTextField();
                 eBaySearchEditBox.setText(productName);
                 Thread.sleep(Constants.WAIT_TIME);
                 uiDevice.pressEnter();
+                Thread.sleep(30000);
 
+                //Find how many search results are returned
                 if (productResultText.waitForExists(5000)) {
                     String info[] = productResultText.getText().split(" ");
                     productCount = Integer.parseInt(info[0].trim());
@@ -170,9 +179,12 @@ public class TestHelper {
     }
 
     /**
-     * @return
+     * Get product list from text file
+     * @return product list
      */
     public static ArrayList<String> getSearchProducts() {
+        //TODO: Fix the issue of assets folder
+
         ArrayList<String> products = new ArrayList<>();
         final String file = "products.txt";
         InputStream is = null;
@@ -201,9 +213,8 @@ public class TestHelper {
     }
 
     /**
-     * Watcher for crash
-     *
-     * @param uiDevice
+     * Watcher for application crash
+     * @param uiDevice Device under test
      */
     public static void setCrashDialogWatcher(UiDevice uiDevice) {
         UiWatcher crashWatcher = new UiWatcher() {
@@ -215,6 +226,7 @@ public class TestHelper {
                     UiObject okButton = new UiObject(new UiSelector().className("android.widget.Button").text("OK"));
                     try {
                         okButton.click();
+                        //TODO: Code to capture logs
                     } catch (UiObjectNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -227,10 +239,14 @@ public class TestHelper {
         uiDevice.getInstance().registerWatcher("CrashDialog", crashWatcher);
     }
 
-//    public static void openApp(String appPackageName) {
-//        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-//        Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        context.startActivity(intent);
-//    }
+    /**
+     * Launch application using app package name
+     * @param appPackageName application package name
+     */
+    public static void openApp(String appPackageName) {
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+    }
 }
