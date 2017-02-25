@@ -17,6 +17,7 @@ Run connectedAndroidTest gradle task
 ## Report:
 Open <folder location>\AndroidUiAutomatorFramework\app\build\reports\androidTests\connected folder after execution of the tests.
 Open index.html file to see execution report
-<img src="screenshots/report_screen.png" width="50%" />
+
+<img src="screenshots/report_screen.png"/>
 
 
