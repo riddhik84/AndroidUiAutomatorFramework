@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'spoon'
 
 android {
     compileSdkVersion 23
@@ -31,11 +30,4 @@ dependencies {
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     compile files('libs/AvayaUiAutomator.jar')
     compile files('libs/log4j-1.2.13.jar')
-    //spoon
-    androidTestCompile 'com.squareup.spoon:spoon-client:1.2.0'
-    //classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
 }
-
-//spoon {
-//    debug = true;
-//}
