@@ -1,4 +1,4 @@
-# AndroidUiAutomator Framework
+# Android UiAutomator Framework
 
 ## eBay app search script using Android UiAutomator tool
 
